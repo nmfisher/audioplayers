@@ -1,5 +1,5 @@
 name: audioplayers
-description: A flutter plugin to play multiple audio files simultaneously
+description: A fork of the AudioPlayer Flutter plugin to enable the new WebAudio features (not yet available in official release)
 version: 0.14.2
 homepage: https://github.com/luanpotter/audioplayer
 
@@ -13,12 +13,13 @@ flutter:
         pluginClass: AudioplayersPlugin
       macos:
         pluginClass: AudioplayersPlugin
-      # web:
-      #   pluginClass: AudioplayersPlugin
-      #   fileName: audioplayers_web.dart
+      web:
+        pluginClass: AudioplayersPlugin
+        fileName: audioplayers_web.dart
 
 dependencies:
   uuid: ^2.0.4
+  howler: ^1.0.3
   path_provider: ^1.5.1
   flutter:
     sdk: flutter
