@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:html';
+import 'dart:typed_data';
 import 'dart:web_audio';
 
 import 'package:flutter/services.dart';
@@ -24,6 +25,29 @@ class WrappedPlayer {
     recreateNode();
     if (isPlaying) {
       resume();
+    }
+  }
+
+  void playBuffer(ByteBuffer buffer, int sampleRate, int numChannels, int bitRate) async {
+    
+    if(bitRate == 16) {
+      var view = buffer.asByteData(44);
+      var output = ByteData(view.lengthInBytes * 2);
+       for(var i = 0; i < view.lengthInBytes; i+=2) {
+        var sample = view.buffer.asByteData().getInt16(i, Endian.little);
+        output.setInt32(i*2, sample, Endian.little);
+      }
+      
+      var arrayBuffer = await _audioCtx.decodeAudioData(buffer, (decodedData) {
+        print("success!");
+      }, (DomException e) {
+        print("DOM Exception");
+        print(e);
+      });
+      setBuffer(arrayBuffer);
+      start(0);
+    } else if(bitRate == 32) {
+      throw Exception();
     }
   }
 
@@ -118,6 +142,13 @@ class AudioplayersPlugin {
     return player;
   }
 
+  WrappedPlayer playBuffer(String playerId, ByteBuffer buffer, int numChannels,
+      int sampleRate, int bitRate) {
+    final WrappedPlayer player = getOrCreatePlayer(playerId);
+    player.playBuffer(buffer, sampleRate, numChannels, bitRate);
+    return player;
+  }
+
   Future<dynamic> handleMethodCall(MethodCall call) async {
     final method = call.method;
     final playerId = call.arguments['playerId'];
@@ -139,6 +170,17 @@ class AudioplayersPlugin {
           final player = await setUrl(playerId, url);
           player.setVolume(volume);
           player.start(position);
+
+          return 1;
+        }
+      case 'playBuffer':
+        {
+          final Uint8List buffer = call.arguments['buffer'];
+          final int numChannels = call.arguments['numChannels'];
+          final int sampleRate = call.arguments['sampleRate'];
+          final int bitRate = call.arguments['bitRate'];
+
+          playBuffer(playerId, buffer.buffer, numChannels, sampleRate, bitRate);
 
           return 1;
         }

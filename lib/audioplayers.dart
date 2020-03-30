@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
@@ -392,6 +393,29 @@ class AudioPlayer {
 
     return result;
   }
+
+  /// Plays a raw audio stream in WAV format.
+  Future<int> playBuffer(
+    Uint8List buffer, 
+    int numChannels,
+    int sampleRate,
+        int bitRate
+  ) async {
+     final int result = await _invokeMethod('playBuffer', {
+      "buffer":buffer,
+      "bitRate":bitRate,
+      "numChannels":numChannels,
+      "sampleRate":sampleRate
+    });
+
+    if (result == 1) {
+      state = AudioPlayerState.PLAYING;
+    }
+
+    return result;
+  }
+
+  
 
   /// Pauses the audio that is currently playing.
   ///
