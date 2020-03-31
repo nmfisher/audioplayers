@@ -399,11 +399,11 @@ class AudioPlayer {
     Uint8List buffer, 
     int numChannels,
     int sampleRate,
-        int bitRate
+        int bitDepth
   ) async {
      final int result = await _invokeMethod('playBuffer', {
       "buffer":buffer,
-      "bitRate":bitRate,
+      "bitDepth":bitDepth,
       "numChannels":numChannels,
       "sampleRate":sampleRate
     });

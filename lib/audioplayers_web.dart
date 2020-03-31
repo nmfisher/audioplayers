@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:html';
+import 'dart:math';
 import 'dart:typed_data';
 import 'dart:web_audio';
 
@@ -28,27 +29,36 @@ class WrappedPlayer {
     }
   }
 
-  void playBuffer(ByteBuffer buffer, int sampleRate, int numChannels, int bitRate) async {
-    
-    if(bitRate == 16) {
-      var view = buffer.asByteData(44);
-      var output = ByteData(view.lengthInBytes * 2);
-       for(var i = 0; i < view.lengthInBytes; i+=2) {
-        var sample = view.buffer.asByteData().getInt16(i, Endian.little);
-        output.setInt32(i*2, sample, Endian.little);
+  int _int32Divisor = 2147483648;
+  ByteData _int32ToFloat32(ByteData source, int sampleRate, int numChannels) {
+      var newBuf = ByteData(source.lengthInBytes);
+      for(int i = 0 ; i < source.lengthInBytes; i+=4) {
+        int val = source.getInt32(i, Endian.little);
+        newBuf.setFloat32(i,  val / _int32Divisor, Endian.little);
       }
-      
-      var arrayBuffer = await _audioCtx.decodeAudioData(buffer, (decodedData) {
-        print("success!");
-      }, (DomException e) {
-        print("DOM Exception");
-        print(e);
-      });
-      setBuffer(arrayBuffer);
-      start(0);
-    } else if(bitRate == 32) {
-      throw Exception();
+      return newBuf;  
+  }
+
+  int _int16Divisor = 32768;
+  ByteData _int16ToFloat32(ByteData source, int sampleRate, int numChannels) {
+    var newBuf = ByteData(source.lengthInBytes * 2);
+    for(int i = 0 ; i < source.lengthInBytes;i+=2) {
+      int val = source.getInt16(i, Endian.little);
+      newBuf.setFloat32(i,  val / _int16Divisor, Endian.little);
     }
+    return newBuf;  
+  }
+
+
+  void playBuffer(ByteBuffer buffer, int sampleRate, int numChannels, int bitDepth) async {
+    var view = buffer.asByteData(44);
+    int numFrames = view.lengthInBytes ~/ bitDepth ~/ 8;
+    AudioBuffer _audioBuf = _audioCtx.createBuffer(numChannels, numFrames, sampleRate);
+    // need to convert from 16/32 bit PCM to 32 bit float
+    ByteData converted = bitDepth == 16 ? _int16ToFloat32(view, sampleRate, numChannels) : _int32ToFloat32(view, sampleRate, numChannels);
+    _audioBuf.copyToChannel(converted.buffer.asFloat32List(), 0);
+    setBuffer(_audioBuf);
+    start(0);
   }
 
   void setVolume(double volume) {
@@ -143,9 +153,9 @@ class AudioplayersPlugin {
   }
 
   WrappedPlayer playBuffer(String playerId, ByteBuffer buffer, int numChannels,
-      int sampleRate, int bitRate) {
+      int sampleRate, int bitDepth) {
     final WrappedPlayer player = getOrCreatePlayer(playerId);
-    player.playBuffer(buffer, sampleRate, numChannels, bitRate);
+    player.playBuffer(buffer, sampleRate, numChannels, bitDepth);
     return player;
   }
 
@@ -178,9 +188,9 @@ class AudioplayersPlugin {
           final Uint8List buffer = call.arguments['buffer'];
           final int numChannels = call.arguments['numChannels'];
           final int sampleRate = call.arguments['sampleRate'];
-          final int bitRate = call.arguments['bitRate'];
+          final int bitDepth = call.arguments['bitDepth'];
 
-          playBuffer(playerId, buffer.buffer, numChannels, sampleRate, bitRate);
+          playBuffer(playerId, buffer.buffer, numChannels, sampleRate, bitDepth);
 
           return 1;
         }
