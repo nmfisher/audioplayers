@@ -8,11 +8,6 @@ dependencies:
     sdk: flutter
   meta: ^1.0.5
   plugin_platform_interface: ^1.0.1
-  audioplayers:
-    git:
-      url: git://github.com/nmfisher/audioplayers
-      path: audioplayers
-    #path: ../audioplayers
   uuid: ^2.0.4
 
 dev_dependencies:
