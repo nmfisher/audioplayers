@@ -49,12 +49,13 @@ class MethodChannelAudioPlayer extends AudioPlayerPlatform {
       // Start the headless audio service. The parameter here is a handle to
       // a callback managed by the Flutter engine, which allows for us to pass
       // references to our callbacks between isolates.
-      final CallbackHandle handle =
-          PluginUtilities.getCallbackHandle(_backgroundCallbackDispatcher);
-      assert(handle != null, 'Unable to lookup callback.');
-      _invokeMethod('startHeadlessService', {
-        'handleKey': <dynamic>[handle.toRawHandle()]
-      });
+      // TODO - fix this - does this need the background audio permission in Info.plist?
+      // final CallbackHandle handle =
+      //     PluginUtilities.getCallbackHandle(_backgroundCallbackDispatcher);
+      // assert(handle != null, 'Unable to lookup callback.');
+      // _invokeMethod('startHeadlessService', {
+      //   'handleKey': <dynamic>[handle.toRawHandle()]
+      // });
     }
   }
 
