@@ -18,12 +18,12 @@ dependencies:
   path_provider: ^1.5.1
   audioplayers_platform_interface:
     git:
-      url: git://github.com/nmfisher/audioplayers
+      url: git://github.com/nmfisher/audioplayers.git
       path: audioplayers_platform_interface
     #path: ../audioplayers_platform_interface
   audioplayers_web: 
     git:
-      url: git://github.com/nmfisher/audioplayers
+      url: git://github.com/nmfisher/audioplayers.git
       path: audioplayers_web
     #path: ../audioplayers_web
   flutter:
