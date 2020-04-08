@@ -22,19 +22,14 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.4.1"
-  audioplayers:
-    dependency: "direct dev"
-    description:
-      path: "../audioplayers"
-      relative: true
-    source: path
-    version: "0.14.3"
   audioplayers_platform_interface:
     dependency: "direct main"
     description:
-      path: "../audioplayers_platform_interface"
-      relative: true
-    source: path
+      path: audioplayers_platform_interface
+      ref: HEAD
+      resolved-ref: "505d25085b270ffa64bd92271c37a17c2099723a"
+      url: "git://github.com/nmfisher/audioplayers.git"
+    source: git
     version: "1.0.0"
   boolean_selector:
     dependency: transitive
@@ -121,27 +116,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.6.4"
-  path_provider:
-    dependency: transitive
-    description:
-      name: path_provider
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.6.5"
-  path_provider_macos:
-    dependency: transitive
-    description:
-      name: path_provider_macos
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.0.4"
-  path_provider_platform_interface:
-    dependency: transitive
-    description:
-      name: path_provider_platform_interface
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.1"
   pedantic:
     dependency: "direct dev"
     description:
@@ -156,13 +130,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.4.0"
-  platform:
-    dependency: transitive
-    description:
-      name: platform
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.2.1"
   plugin_platform_interface:
     dependency: transitive
     description:
@@ -254,4 +221,4 @@ packages:
     version: "3.6.1"
 sdks:
   dart: ">=2.6.0 <3.0.0"
-  flutter: ">=1.10.0 <2.0.0"
+  flutter: ">=1.9.1+hotfix.4 <2.0.0"

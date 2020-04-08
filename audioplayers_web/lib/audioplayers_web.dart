@@ -16,7 +16,6 @@ class AudioPlayerPlugin extends AudioPlayerPlatform {
   
    /// Registers this class as the default instance of [AudioPlayerPlatform].
   static void registerWith(Registrar registrar) {
-    print("registerign!!");
     AudioPlayerPlatform.instance = AudioPlayerPlugin();
   }
 

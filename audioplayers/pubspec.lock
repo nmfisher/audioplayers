@@ -39,16 +39,20 @@ packages:
   audioplayers_platform_interface:
     dependency: "direct main"
     description:
-      path: "../audioplayers_platform_interface"
-      relative: true
-    source: path
+      path: audioplayers_platform_interface
+      ref: HEAD
+      resolved-ref: "505d25085b270ffa64bd92271c37a17c2099723a"
+      url: "git://github.com/nmfisher/audioplayers.git"
+    source: git
     version: "1.0.0"
   audioplayers_web:
     dependency: "direct main"
     description:
-      path: "../audioplayers_web"
-      relative: true
-    source: path
+      path: audioplayers_web
+      ref: HEAD
+      resolved-ref: "505d25085b270ffa64bd92271c37a17c2099723a"
+      url: "git://github.com/nmfisher/audioplayers.git"
+    source: git
     version: "1.0.0"
   boolean_selector:
     dependency: transitive
