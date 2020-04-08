@@ -1,0 +1,33 @@
+name: audioplayers_web
+description: The web interface for the audioplayers plugin.
+homepage: https://github.com/nmfisher/audioplayers/audioplayers_web
+version: 1.0.0
+
+flutter:
+  plugin:
+    platforms:
+      web:
+        pluginClass: AudioPlayerPlugin
+        fileName: audioplayers_web.dart
+
+dependencies:
+  audioplayers_platform_interface:
+    path: ../audioplayers_platform_interface
+  flutter:
+    sdk: flutter
+  flutter_web_plugins:
+    sdk: flutter
+  meta: ^1.0.5
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  mockito: ^4.1.1
+  pedantic: ^1.8.0
+  audioplayers:
+    path: ../audioplayers
+
+environment:
+  sdk: ">=2.0.0-dev.28.0 <3.0.0"
+  flutter: ">=1.9.1+hotfix.4 <2.0.0"
