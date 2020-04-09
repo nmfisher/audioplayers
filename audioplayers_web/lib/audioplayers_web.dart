@@ -64,7 +64,6 @@ class AudioPlayerPlugin extends AudioPlayerPlatform {
     bool respectSilence = false,
     bool stayAwake = false,
   }) async {
-    print("Playing!");
     await setUrl(url);
     final player = getOrCreatePlayer("default");
     player.setVolume(volume);
