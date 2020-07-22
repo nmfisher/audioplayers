@@ -693,7 +693,7 @@ const float _defaultPlaybackRate = 1.0;
   NSMutableDictionary * playerInfo = players[playerId];
 
   [ _channel_audioplayer invokeMethod:@"audio.onComplete" arguments:@{@"playerId": playerId}];
-
+  NSLog(@"%@ -> invoked onComplete...", osName);
 
   if (![playerInfo[@"isPlaying"] boolValue]) {
     return;
