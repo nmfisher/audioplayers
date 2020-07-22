@@ -692,6 +692,9 @@ const float _defaultPlaybackRate = 1.0;
   NSLog(@"%@ -> onSoundComplete...", osName);
   NSMutableDictionary * playerInfo = players[playerId];
 
+  [ _channel_audioplayer invokeMethod:@"audio.onComplete" arguments:@{@"playerId": playerId}];
+
+
   if (![playerInfo[@"isPlaying"] boolValue]) {
     return;
   }
@@ -703,7 +706,6 @@ const float _defaultPlaybackRate = 1.0;
     [ self resume:playerId ];
   }
 
-  [ _channel_audioplayer invokeMethod:@"audio.onComplete" arguments:@{@"playerId": playerId}];
   #if TARGET_OS_IPHONE
       if (headlessServiceInitialized) {
           [_callbackChannel invokeMethod:@"audio.onNotificationBackgroundPlayerStateChanged" arguments:@{@"playerId": playerId, @"updateHandleMonitorKey": @(_updateHandleMonitorKey), @"value": @"completed"}];
