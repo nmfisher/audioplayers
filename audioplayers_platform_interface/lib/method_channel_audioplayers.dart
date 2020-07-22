@@ -79,6 +79,7 @@ void _backgroundCallbackDispatcher() {
   // native portion of the plugin. Here we message the audio notification data
   // which we then pass to the provided callback.
   _channel.setMethodCallHandler((MethodCall call) async {
+    print("background callback received");
     Function _performCallbackLookup() {
       final CallbackHandle handle = CallbackHandle.fromRawHandle(
           call.arguments['updateHandleMonitorKey']);
@@ -371,11 +372,13 @@ void _backgroundCallbackDispatcher() {
     try {
       _doHandlePlatformCall(call);
     } catch (ex) {
+      print("erro");
       _log('Unexpected error: $ex');
     }
   }
 
   static Future<void> _doHandlePlatformCall(MethodCall call) async {
+    print("got platform call!");
     final Map<dynamic, dynamic> callArgs = call.arguments as Map;
     _log('_platformCallHandler call ${call.method} $callArgs');
 
