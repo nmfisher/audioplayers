@@ -411,6 +411,7 @@ void _backgroundCallbackDispatcher() {
         player.positionHandler?.call(newDuration);
         break;
       case 'audio.onComplete':
+        print("audio on complete!");
         player.state = AudioPlayerState.COMPLETED;
         player.completion = null;
         // ignore: deprecated_member_use_from_same_package
