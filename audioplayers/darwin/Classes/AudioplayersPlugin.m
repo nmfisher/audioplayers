@@ -692,7 +692,11 @@ const float _defaultPlaybackRate = 1.0;
   NSLog(@"%@ -> onSoundComplete...", osName);
   NSMutableDictionary * playerInfo = players[playerId];
 
-  [ _channel_audioplayer invokeMethod:@"audio.onComplete" arguments:@{@"playerId": playerId}];
+  FlutterResult callback;
+
+  [ _channel_audioplayer invokeMethod:@"audio.onComplete" arguments:@{@"playerId": playerId}, result:(FlutterResult)result {
+    NSLog(@"%@ -> result...", result);
+  }];
   NSLog(@"%@ -> invoked onComplete...", osName);
 
   if (![playerInfo[@"isPlaying"] boolValue]) {
