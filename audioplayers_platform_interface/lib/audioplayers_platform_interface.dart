@@ -34,9 +34,7 @@ abstract class AudioPlayerPlatform extends PlatformInterface {
   /// Defaults to [MethodChannelAudioPlayer].
   static AudioPlayerPlatform get instance {
     if(_instance == null) {
-        print("creating MCAP");
         _instance  = MethodChannelAudioPlayer();
-        print(_instance);
     }
     return _instance;
     }

@@ -17,8 +17,8 @@ import 'package:uuid/uuid.dart';
 /// An implementation of [UrlLauncherPlatform] that uses method channels.
 class MethodChannelAudioPlayer extends AudioPlayerPlatform {
 
-  static MethodChannel _channel = MethodChannel('xyz.luan/audioplayers')..setMethodCallHandler(platformCallHandler);
-  static MethodChannel _callbackChannel = MethodChannel('xyz.luan/audioplayers_callback')..setMethodCallHandler(platformCallHandler);
+  static MethodChannel _channel; 
+  static MethodChannel _callbackChannel; 
 
   static final _uuid = Uuid();
 
@@ -41,7 +41,10 @@ class MethodChannelAudioPlayer extends AudioPlayerPlatform {
   AudioPlayerState get state => _audioPlayerState;
 
   MethodChannelAudioPlayer({PlayerMode mode = PlayerMode.MEDIA_PLAYER, this.playerId}) : super(mode:mode) {
-    _channel.setMethodCallHandler(platformCallHandler);
+    if(_channel == null) {
+      _channel = MethodChannel('xyz.luan/audioplayers')..setMethodCallHandler(platformCallHandler);
+      _callbackChannel = MethodChannel('xyz.luan/audioplayers_callback')..setMethodCallHandler(platformCallHandler);
+    }
     this.mode ??= PlayerMode.MEDIA_PLAYER;
     this.playerId ??= _uuid.v4();
     players[playerId] = this;
