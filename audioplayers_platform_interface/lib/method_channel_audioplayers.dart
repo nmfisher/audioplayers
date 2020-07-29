@@ -17,8 +17,8 @@ import 'package:uuid/uuid.dart';
 /// An implementation of [UrlLauncherPlatform] that uses method channels.
 class MethodChannelAudioPlayer extends AudioPlayerPlatform {
 
-  MethodChannel _channel = MethodChannel('xyz.luan/audioplayers')..setMethodCallHandler(platformCallHandler);
-  MethodChannel _callbackChannel = MethodChannel('xyz.luan/audioplayers_callback')..setMethodCallHandler(platformCallHandler);
+  static MethodChannel _channel = MethodChannel('xyz.luan/audioplayers')..setMethodCallHandler(platformCallHandler);
+  static MethodChannel _callbackChannel = MethodChannel('xyz.luan/audioplayers_callback')..setMethodCallHandler(platformCallHandler);
 
   static final _uuid = Uuid();
 
@@ -41,6 +41,7 @@ class MethodChannelAudioPlayer extends AudioPlayerPlatform {
   AudioPlayerState get state => _audioPlayerState;
 
   MethodChannelAudioPlayer({PlayerMode mode = PlayerMode.MEDIA_PLAYER, this.playerId}) : super(mode:mode) {
+    _channel.setMethodCallHandler(platformCallHandler);
     this.mode ??= PlayerMode.MEDIA_PLAYER;
     this.playerId ??= _uuid.v4();
     players[playerId] = this;
@@ -179,6 +180,7 @@ void _backgroundCallbackDispatcher() {
     Duration position,
     bool respectSilence = false,
     bool stayAwake = false,
+    bool allowRecord = true,
   }) async {
     isLocal ??= isLocalUrl(url);
     volume ??= 1.0;
@@ -192,10 +194,13 @@ void _backgroundCallbackDispatcher() {
       'position': position?.inMilliseconds,
       'respectSilence': respectSilence,
       'stayAwake': stayAwake,
+      'allowRecord':allowRecord
     });
 
     if (result == 1) {
       state = AudioPlayerState.PLAYING;
+    } else {
+        throw Exception("Unknown error trying to play audio, audioplayer returned result : $result");
     }
 
     return result;
@@ -372,13 +377,11 @@ void _backgroundCallbackDispatcher() {
     try {
       _doHandlePlatformCall(call);
     } catch (ex) {
-      print("erro");
       _log('Unexpected error: $ex');
     }
   }
 
   static Future<void> _doHandlePlatformCall(MethodCall call) async {
-    print("got platform call!");
     final Map<dynamic, dynamic> callArgs = call.arguments as Map;
     _log('_platformCallHandler call ${call.method} $callArgs');
 

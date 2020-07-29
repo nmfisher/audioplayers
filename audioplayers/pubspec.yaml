@@ -1,6 +1,6 @@
 name: audioplayers
 description: A fork of the AudioPlayer Flutter plugin to enable the new WebAudio features (not yet available in official release)
-version: 0.14.3
+version: 0.14.4
 homepage: https://github.com/luanpotter/audioplayer
 
 flutter:

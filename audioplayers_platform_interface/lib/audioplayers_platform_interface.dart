@@ -15,28 +15,35 @@ typedef void AudioPlayerStateChangeHandler(AudioPlayerState state);
 
 
 
-/// The interface that implementations of url_launcher must implement.
+/// The interface that implementations of audioplayer must implement.
 ///
-/// Platform implementations should extend this class rather than implement it as `url_launcher`
+/// Platform implementations should extend this class rather than implement it as `audioplayer`
 /// does not consider newly added methods to be breaking changes. Extending this class
 /// (using `extends`) ensures that the subclass will get the default implementation, while
 /// platform implementations that `implements` this interface will be broken by newly added
-/// [UrlLauncherPlatform] methods.
+/// [AudioPlayerPlatformPlatform] methods.
 abstract class AudioPlayerPlatform extends PlatformInterface {
   /// Constructs a AudioPlayerPlatform.
   AudioPlayerPlatform({this.mode}) : super(token: _token);
 
   static final Object _token = Object();
 
-  static AudioPlayerPlatform _instance = MethodChannelAudioPlayer();
-
+  static AudioPlayerPlatform _instance;
   /// The default instance of [AudioPlayerPlatform] to use.
   ///
-  /// Defaults to [MethodChannelUrlLauncher].
-  static AudioPlayerPlatform get instance => _instance;
+  /// Defaults to [MethodChannelAudioPlayer].
+  static AudioPlayerPlatform get instance {
+    if(_instance == null) {
+        print("creating MCAP");
+        _instance  = MethodChannelAudioPlayer();
+        print(_instance);
+    }
+    return _instance;
+    }
+    
 
   /// Platform-specific plugins should set this with their own platform-specific
-  /// class that extends [UrlLauncherPlatform] when they register themselves.
+  /// class that extends [AudioPlayerPlatform] when they register themselves.
   static set instance(AudioPlayerPlatform instance) {
     PlatformInterface.verifyToken(instance, _token);
     _instance = instance;
