@@ -1,7 +1,7 @@
 name: audioplayers_web
 description: The web interface for the audioplayers plugin.
 homepage: https://github.com/nmfisher/audioplayers/audioplayers_web
-version: 1.0.0
+version: 1.0.1
 
 flutter:
   plugin:
