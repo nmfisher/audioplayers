@@ -72,8 +72,13 @@ public class AudioplayersPlugin implements MethodCallHandler {
                             }
                             player.play(context.getApplicationContext());                        
                         } catch (Exception ex) {
-                            channel.invokeMethod("audio.onError", ex.toString());
-                            ex.printStackTrace();
+                          new Handler(Looper.getMainLooper()).post(new Runnable() {
+                            @Override
+                            public void run() {
+                              channel.invokeMethod("audio.onError", ex.toString());
+                            }
+                          });
+                          ex.printStackTrace();
                         }
                     }
                 }).start();
