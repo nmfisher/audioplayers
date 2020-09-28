@@ -3,6 +3,7 @@ package xyz.luan.audioplayers;
 import android.os.Build;
 import android.content.Context;
 import android.os.Handler;
+import android.os.Looper;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
@@ -72,10 +73,11 @@ public class AudioplayersPlugin implements MethodCallHandler {
                             }
                             player.play(context.getApplicationContext());                        
                         } catch (Exception ex) {
+                          final String message = ex.toString();
                           new Handler(Looper.getMainLooper()).post(new Runnable() {
                             @Override
                             public void run() {
-                              channel.invokeMethod("audio.onError", ex.toString());
+                              channel.invokeMethod("audio.onError", buildArguments(player.getPlayerId(), message));
                             }
                           });
                           ex.printStackTrace();
