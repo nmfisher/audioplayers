@@ -14,11 +14,11 @@ import 'package:flutter/services.dart';
 import 'package:uuid/uuid.dart';
 
 
-/// An implementation of [UrlLauncherPlatform] that uses method channels.
+/// An implementation of [AudioPlayerPlatform] that uses method channels.
 class MethodChannelAudioPlayer extends AudioPlayerPlatform {
 
-  static MethodChannel _channel; 
-  static MethodChannel _callbackChannel; 
+  static MethodChannel _channel = MethodChannel('xyz.luan/audioplayers')..setMethodCallHandler(platformCallHandler);
+  static MethodChannel _callbackChannel = MethodChannel('xyz.luan/audioplayers_callback')..setMethodCallHandler(platformCallHandler);
 
   static final _uuid = Uuid();
 
@@ -41,10 +41,6 @@ class MethodChannelAudioPlayer extends AudioPlayerPlatform {
   AudioPlayerState get state => _audioPlayerState;
 
   MethodChannelAudioPlayer({PlayerMode mode = PlayerMode.MEDIA_PLAYER, this.playerId}) : super(mode:mode) {
-    if(_channel == null) {
-      _channel = MethodChannel('xyz.luan/audioplayers')..setMethodCallHandler(platformCallHandler);
-      _callbackChannel = MethodChannel('xyz.luan/audioplayers_callback')..setMethodCallHandler(platformCallHandler);
-    }
     this.mode ??= PlayerMode.MEDIA_PLAYER;
     this.playerId ??= _uuid.v4();
     players[playerId] = this;
@@ -386,7 +382,6 @@ void _backgroundCallbackDispatcher() {
 
   static Future<void> _doHandlePlatformCall(MethodCall call) async {
     final Map<dynamic, dynamic> callArgs = call.arguments as Map;
-    _log('_platformCallHandler call ${call.method} $callArgs');
 
     final playerId = callArgs['playerId'] as String;
     final MethodChannelAudioPlayer player = players[playerId];

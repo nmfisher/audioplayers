@@ -13,7 +13,9 @@ NSString *const AudioplayersPluginStop = @"AudioplayersPluginStop";
 
 static NSMutableDictionary * players;
 
-@interface AudioplayersPlugin()
+@interface AudioplayersPlugin() {
+    FlutterMethodChannel *channel;
+}
 -(void) pause: (NSString *) playerId;
 -(void) stop: (NSString *) playerId;
 -(void) seek: (NSString *) playerId time: (CMTime) time;
@@ -29,7 +31,6 @@ static NSMutableDictionary * players;
 typedef void (^VoidCallback)(NSString * playerId);
 
 NSMutableSet *timeobservers;
-FlutterMethodChannel *_channel_audioplayer;
 bool _isDealloc = false;
 
 NSObject<FlutterPluginRegistrar> *_registrar;
@@ -63,7 +64,7 @@ const float _defaultPlaybackRate = 1.0;
                                    binaryMessenger:[registrar messenger]];
   AudioplayersPlugin* instance = [[AudioplayersPlugin alloc] init];
   [registrar addMethodCallDelegate:instance channel:channel];
-  _channel_audioplayer = channel;
+  instance->channel = channel;
 }
 
 - (id)init {
@@ -151,7 +152,6 @@ const float _defaultPlaybackRate = 1.0;
                   },
                 @"play":
                   ^{
-                    NSLog(@"play!");
                     NSString *url = call.arguments[@"url"];
                     if (url == nil)
                         result(0);
@@ -174,7 +174,6 @@ const float _defaultPlaybackRate = 1.0;
                     NSLog(@"isLocal: %d %@", isLocal, call.arguments[@"isLocal"] );
                     NSLog(@"volume: %f %@", volume, call.arguments[@"volume"] );
                     NSLog(@"position: %d %@", milliseconds, call.arguments[@"positions"] );
-                      NSLog(allowRecord ? @"allowRecord!" : @"disallowrecord");
                       [self play:playerId url:url isLocal:isLocal volume:volume time:time isNotification:respectSilence allowRecord:allowRecord];
                   },
                 @"pause":
@@ -399,7 +398,7 @@ const float _defaultPlaybackRate = 1.0;
         } else {
             // Fallback on earlier versions
         }
-        [_channel_audioplayer invokeMethod:@"audio.onNotificationPlayerStateChanged" arguments:@{@"playerId": _currentPlayerId, @"value": @(_isPlaying)}];
+        [channel invokeMethod:@"audio.onNotificationPlayerStateChanged" arguments:@{@"playerId": _currentPlayerId, @"value": @(_isPlaying)}];
         
         if (headlessServiceInitialized) {
           [_callbackChannel invokeMethod:@"audio.onNotificationBackgroundPlayerStateChanged" arguments:@{@"playerId": _currentPlayerId, @"updateHandleMonitorKey": @(_updateHandleMonitorKey), @"value": playerState}];
@@ -573,7 +572,7 @@ const float _defaultPlaybackRate = 1.0;
   if(CMTimeGetSeconds(duration)>0){
     NSLog(@"%@ -> invokechannel", osName);
 	int mseconds = [self getMillisecondsFromCMTime:duration];
-    [_channel_audioplayer invokeMethod:@"audio.onDuration" arguments:@{@"playerId": playerId, @"value": @(mseconds)}];
+    [channel invokeMethod:@"audio.onDuration" arguments:@{@"playerId": playerId, @"value": @(mseconds)}];
   }
 }
 
@@ -604,7 +603,7 @@ const float _defaultPlaybackRate = 1.0;
     }
     int mseconds = [self getMillisecondsFromCMTime:time];
     
-    [_channel_audioplayer invokeMethod:@"audio.onCurrentPosition" arguments:@{@"playerId": playerId, @"value": @(mseconds)}];
+    [channel invokeMethod:@"audio.onCurrentPosition" arguments:@{@"playerId": playerId, @"value": @(mseconds)}];
 }
 
 -(void) pause: (NSString *) playerId {
@@ -685,10 +684,10 @@ const float _defaultPlaybackRate = 1.0;
           if (_infoCenter != nil) {
             [ self updateNotification:seconds ];
           }
-          [ _channel_audioplayer invokeMethod:@"audio.onSeekComplete" arguments:@{@"playerId": playerId,@"value":@(YES)}];
+          [ channel invokeMethod:@"audio.onSeekComplete" arguments:@{@"playerId": playerId,@"value":@(YES)}];
       }else{
           NSLog(@"ios -> seekCancelled...");
-          [ _channel_audioplayer invokeMethod:@"audio.onSeekComplete" arguments:@{@"playerId": playerId,@"value":@(NO)}];
+          [ channel invokeMethod:@"audio.onSeekComplete" arguments:@{@"playerId": playerId,@"value":@(NO)}];
       }
   }];
   #else
@@ -702,7 +701,7 @@ const float _defaultPlaybackRate = 1.0;
 
   FlutterResult callback;
 
-  [ _channel_audioplayer invokeMethod:@"audio.onComplete" arguments:@{@"playerId": playerId}];
+  [ channel invokeMethod:@"audio.onComplete" arguments:@{@"playerId": playerId}];
 
   if (![playerInfo[@"isPlaying"] boolValue]) {
     return;
@@ -749,7 +748,7 @@ const float _defaultPlaybackRate = 1.0;
         onReady(playerId);
       }
     } else if ([[player currentItem] status ] == AVPlayerItemStatusFailed) {
-      [_channel_audioplayer invokeMethod:@"audio.onError" arguments:@{@"playerId": playerId, @"value": @"AVPlayerItemStatus.failed"}];
+      [channel invokeMethod:@"audio.onError" arguments:@{@"playerId": playerId, @"value": @"AVPlayerItemStatus.failed"}];
     }
   } else {
     // Any unrecognized context must belong to super
