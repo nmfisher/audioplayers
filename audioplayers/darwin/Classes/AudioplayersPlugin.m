@@ -456,7 +456,6 @@ const float _defaultPlaybackRate = 1.0;
       NSError *error = nil;
       BOOL success = false;
     
-
       AVAudioSessionCategory category =  allowRecord ? AVAudioSessionCategoryPlayAndRecord : respectSilence ? AVAudioSessionCategoryAmbient : AVAudioSessionCategoryPlayback;
       AVAudioSessionCategoryOptions options = allowRecord ? AVAudioSessionCategoryOptionDefaultToSpeaker : respectSilence ? AVAudioSessionCategoryOptionMixWithOthers : nil;
 
