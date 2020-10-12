@@ -15,6 +15,7 @@ dependencies:
     git:
       url: git://github.com/nmfisher/audioplayers.git
       path: audioplayers_platform_interface
+      ref: e0fe2636
     #path: ../audioplayers_platform_interface
   flutter:
     sdk: flutter
